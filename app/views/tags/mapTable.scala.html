@@ -1,0 +1,9 @@
+@(showThisMap:Map[String,String])
+
+<table border="1">
+  @for(entry <- showThisMap) {
+    <tr>
+      <td>@entry._1</td><td>@entry._2</td>
+    </tr>
+  }
+</table>

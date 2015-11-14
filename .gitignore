@@ -15,3 +15,7 @@ server.pid
 *.eml
 /dist/
 .cache
+*.swp
+.idea
+activator-launch-*.jar
+activator.bat
