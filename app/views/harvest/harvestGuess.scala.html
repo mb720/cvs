@@ -1,4 +1,4 @@
-@(siteTitle: String, harvestGuessForm: Form[HarvestGuess])(implicit messages: Messages)
+@(siteTitle: String, harvestGuessForm: Form[HarvestGuessFromForm])(implicit messages: Messages)
 @import b3.vertical.fieldConstructor  // Declares a vertical field constructor as default
 
 @import tags.harvestGuess.grainRow
@@ -8,7 +8,9 @@
 @inspectionBodies = @{
   Seq("SGS" -> "SGS Austria Controll-Co GesmbH", "ABG" -> "ABG Austria Bio Garantie", "BIOS" -> "BIOS Biokontrollservice Österreich", "Lacon" -> "Lacon GmbH")
 }
-
+@taxRates = @{
+  List("10%", "12%").map(str => str -> str)
+}
 @grainTypes = @{
   List("Weizen", "Roggen")
 }
@@ -29,39 +31,38 @@
       Stammdaten einfügen</span> </a>
     <p>
 
-  <div id="personDataForm">
-    @b3.inline.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
-      @b3.inputWrapped("text", harvestGuessForm("name"), '_hiddenLabel -> "Name", 'placeholder -> "Name") { input =>
-        <div class="input-group">
-          <label class="control-label">Name</label>
-          @input
-        </div>
-      }
-      @b3.inputWrapped("text", harvestGuessForm("address"), '_hiddenLabel -> "Adresse", 'placeholder -> "Adresse") { input =>
-        <div class="input-group">
-          <label class="control-label"><i class="fa fa-map-marker"></i> Adresse</label>
-          @input
-        </div>
-      }
-      @b3.inputWrapped("text", harvestGuessForm("phone"), '_hiddenLabel -> "Telefonnummer", 'placeholder -> "Telefonnummer") { input =>
-        <div class="input-group">
-          <label class="control-label"><i class="fa fa-phone"></i> Telefonnummer</label>
-          @input
-        </div>
-      }
-      @b3.inputWrapped("email", harvestGuessForm("email"), '_hiddenLabel -> "Email-Adresse", 'placeholder -> "Email-Adresse") { input =>
-        <div class="input-group">
-          <label class="control-label"><i class="fa fa-at"></i> Email-Adresse</label>
-          @input
-        </div>
-      }
-    }
-  </div>
-    <hr>
+    @b3.inline.form(action = routes.HarvestGuessForm.handleHarvestGuess()) { implicit inlineFieldConstructor =>
+      <div id="personDataForm">
+        @b3.inputWrapped("text", harvestGuessForm("contactData.name"), '_hiddenLabel -> "Name", 'placeholder -> "Name") { input =>
+          <div class="input-group">
+            <label class="control-label">Name</label>
+            @input
+          </div>
+        }
+        @b3.inputWrapped("text", harvestGuessForm("contactData.postalAddress"), '_hiddenLabel -> "Adresse", 'placeholder -> "Adresse") { input =>
+          <div class="input-group">
+            <label class="control-label"><i class="fa fa-map-marker"></i> Adresse</label>
+            @input
+          </div>
+        }
+        @b3.inputWrapped("text", harvestGuessForm("contactData.phoneNumber"), '_hiddenLabel -> "Telefonnummer", 'placeholder -> "Telefonnummer") { input =>
+          <div class="input-group">
+            <label class="control-label"><i class="fa fa-phone"></i> Telefonnummer</label>
+            @input
+          </div>
+        }
+        @b3.inputWrapped("email", harvestGuessForm("contactData.emailAddress"), '_hiddenLabel -> "Email-Adresse", 'placeholder -> "Email-Adresse") { input =>
+          <div class="input-group">
+            <label class="control-label"><i class="fa fa-at"></i> Email-Adresse</label>
+            @input
+          </div>
+        }
+      </div>
+      <hr>
 
-    <h3>Ihr Betrieb</h3>
-    <div id="formAboutFarmerCompany">
-      @b3.inline.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
+      <div id="formAboutFarmerCompany">
+        <h3>Ihr Betrieb</h3>
+
         @b3.inputWrapped("text", harvestGuessForm("companyNumber"), '_hiddenLabel -> "Betriebsnummer", 'placeholder -> "Betriebsnummer") { input =>
           <div class="input-group">
             <label class="control-label">Betriebsnummer</label>
@@ -74,6 +75,13 @@
             @input
           </div>
         }
+        @b3.inputWrapped("select", harvestGuessForm("taxRate"), '_hiddenLabel -> "Steuersatz") { input =>
+          <div class="input-group">
+            <label class="control-label">Steuersatz</label>
+            <br>
+              @b3.select(harvestGuessForm("taxRate"), options = taxRates)
+          </div>
+        }
         @b3.inputWrapped("select", harvestGuessForm("inspectionBody"), '_hiddenLabel -> "Kontrollstelle") { input =>
           <div class="input-group">
             <label class="control-label">Kontrollstelle</label>
@@ -81,24 +89,35 @@
               @b3.select(harvestGuessForm("inspectionBody"), options = inspectionBodies)
           </div>
         }
-      }
-      <p>
-        @b3.vertical.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
+        <p>
           @b3.radio(harvestGuessForm("bioUnionOrCodex"), options = Seq("Ja" -> "Ja", "Nein" -> "Nein, ich bin ein Codex-Betrieb"), '_label -> "Sind Sie Mitglied bei einem Bio-Verband?")
+          @*TODO: Show bio unions when user selects yes*@
+        </p>
+      </div>
+      <hr>
+      <div id="farmersBankData">
+        <h3>Ihre Bank</h3>
+        @b3.inputWrapped("text", harvestGuessForm("bankData"), '_hiddenLabel -> "Bankverbindung", 'placeholder -> "Bankverbindung") { input =>
+          <div class="input-group">
+            <label class="control-label">Bankverbindung</label>
+            @input
+          </div>
         }
-        @*TODO: Show bio unions when user selects yes*@
-      </p>
-    </div>
+        @b3.inputWrapped("text", harvestGuessForm("iban"), '_hiddenLabel -> "IBAN", 'placeholder -> "IBAN") { input =>
+          <div class="input-group">
+            <label class="control-label">IBAN</label>
+            @input
+          </div>
+        }
+      </div>
 
-    <hr>
-    <h3>Ihre Bank</h3>
-    <div id="farmersBankData">
-    @b3.inline.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
-      @b3.text(harvestGuessForm("iban"), 'placeholder -> "IBAN")
+    @b3.submit('class -> "btn btn-success") {
+      <span class="fa fa-4x fa-send"></span> <span id="submitHarvestGuessButtonText"> Personendaten abschicken</span>
     }
     </div>
+}
 
-  </div>
+
 
   <h3>Speisegetreide</h3>
   <table class="table table-striped" >
@@ -156,7 +175,7 @@
   <hr>
 
   @b3.submit('class -> "btn btn-success") {
-    <span class="fa fa-4x fa-send"></span> <span id="submitHarvestGuessButtonText"> Abschicken</span>
+    <span class="fa fa-4x fa-send"></span> <span id="submitHarvestGuessButtonText"> Formular abschicken</span>
   }
   <div id="finePrint">
     <p>
