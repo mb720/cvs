@@ -1,13 +1,11 @@
 package controllers
 
 import play.api.Logger
-import play.api.i18n.{MessagesApi, I18nSupport}
-
-//import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.i18n.{MessagesApi, I18nSupport}
 import javax.inject.Inject
 
 import views._
@@ -16,8 +14,12 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
 
   val siteTitle = "CVS"
 
-  val bootstrapForm = Form(single("foo" -> text(maxLength = 10)))
-  //def index = Action {implicit request => Ok(views.html.index("CVS is still awaiting messages")(siteTitle)(fooForm)) }
+  val bootstrapForm = Form(
+    tuple(
+      "email" -> nonEmptyText,
+      "password" -> nonEmptyText,
+      "rememberMe" -> boolean
+    ))
 
   val helloForm = Form(
     tuple(
@@ -27,14 +29,13 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
     ))
 
   def index = Action {
-    Ok(html.index(helloForm, bootstrapForm))
+    Ok(html.index(siteTitle, helloForm, bootstrapForm))
   }
 
   def sayHello = Action {
     implicit request =>
       helloForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.index(formWithErrors, bootstrapForm)),
-      { case (name, repeat, color) => Ok(html.result(name, repeat.toInt, color)) }
+      formWithErrors => BadRequest(html.index(siteTitle, formWithErrors, bootstrapForm)), { case (name, repeat, color) => Ok(html.result(name, repeat.toInt, color)) }
       )
   }
 
@@ -53,5 +54,15 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
     Logger.info("testing")
     val myMap = Map("1" -> "one", "2" -> "two")
     Ok(html.viewTests(myMap, "This is nice"))
+  }
+
+  def showBootstrapFormContents() = Action {
+    implicit request =>
+      bootstrapForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(html.index(siteTitle, helloForm, formWithErrors)), { case (userEmail, password, remember) =>
+        val userInputAsMap = Map("Email" -> userEmail, "Password" -> password, "Remember me" -> String.valueOf(remember))
+        Ok(html.viewTests(userInputAsMap, "Nice"))
+      }
+      )
   }
 }

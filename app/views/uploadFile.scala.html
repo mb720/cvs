@@ -1,0 +1,5 @@
+@helper.form(action = routes.FileUpload.handleUpload, 'enctype -> "multipart/form-data") {
+  File to upload: <input type="file" name="uploadedFile">
+
+  <div> <input type="submit"> </div>
+}

@@ -3,8 +3,8 @@
 
 # --- !Ups
 
-create table "MESSAGE" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"content" VARCHAR(254) NOT NULL);
+create table "cvs_products" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"name" VARCHAR(254) NOT NULL);
 
 # --- !Downs
 
-drop table "MESSAGE";
+drop table "cvs_products";

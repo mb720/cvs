@@ -1,0 +1,21 @@
+@(productForm: Form[CvsProduct])(implicit flash: Flash, messages:Messages)
+
+@import common._
+@mainLayout(title = "New Product") {
+
+  @flash.get("success").map { message =>
+    <p>@message</p>
+  }
+  @if(productForm.hasGlobalErrors) {
+    <ul>
+    @for(error <- productForm.globalErrors) {
+      <li>@error.message</li>
+    }
+    </ul>
+  }
+  @helper.form(action = routes.CvsProducts.handleNewProduct) {
+    @helper.inputText(productForm("id"))
+    @helper.inputText(productForm("name"))
+    <input type="submit">
+  }
+}

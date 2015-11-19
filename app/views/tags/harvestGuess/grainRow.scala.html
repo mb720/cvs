@@ -1,0 +1,15 @@
+@(harvestGuessForm: Form[HarvestGuess], grainTypes: List[String])(implicit messages: Messages)
+
+@import b3.vertical.fieldConstructor
+
+@grainTypesAsSeq = @{
+  grainTypes.map(grainType => grainType -> grainType)
+}
+<tr>
+  <td>@b3.select(harvestGuessForm("grainType"), options = grainTypesAsSeq) </td>
+  <td>@b3.number(harvestGuessForm("hectare"), 'placeholder -> "Hektar")</td>
+  <td>@b3.number(harvestGuessForm("tons"), 'placeholder -> "Tonnen")</td>
+  <td>@b3.radio(harvestGuessForm("status"), options = List("BIO", "UM").map(str => str -> str))</td>
+  <td>@b3.text(harvestGuessForm("takeoverPlace"), 'placeholder -> "Übernahmestelle")</td>
+  <td>@b3.textarea(harvestGuessForm("comments"), 'placeholder -> "Anmerkungen")</td>
+</tr>

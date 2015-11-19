@@ -1,11 +1,7 @@
-@(someMap: Map[String, String], theHeader: String)
-<h1>@theHeader</h1>
+@(someMap: Map[String, String], siteTitle: String)
+  @import common._
+  @import tags._
+  @mainLayout(title = siteTitle) {
+    @mapTable(someMap)
+  }
 
-<ul>
-@for(entry <- someMap) {
-  <li>@entry._2</li>
-}
-</ul>
-
-@import tags._
-@mapTable(someMap)

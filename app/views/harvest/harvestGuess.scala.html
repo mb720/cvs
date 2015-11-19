@@ -1,0 +1,168 @@
+@(siteTitle: String, harvestGuessForm: Form[HarvestGuess])(implicit messages: Messages)
+@import b3.vertical.fieldConstructor  // Declares a vertical field constructor as default
+
+@import tags.harvestGuess.grainRow
+@harvestYear = @{
+  "2016"
+}
+@inspectionBodies = @{
+  Seq("SGS" -> "SGS Austria Controll-Co GesmbH", "ABG" -> "ABG Austria Bio Garantie", "BIOS" -> "BIOS Biokontrollservice Österreich", "Lacon" -> "Lacon GmbH")
+}
+
+@grainTypes = @{
+  List("Weizen", "Roggen")
+}
+@grainTypesAsSeq = @{
+  grainTypes.map(str => str -> str)
+}
+
+@main(title = siteTitle) {
+  <div id="formHeader">
+    <h1>Erntemeldung</h1>
+    <h4>für die Vermarktung und Vermittlung von Biogetreide der Ernte @harvestYear</h4>
+  </div>
+
+  <div id="personalAndCompanyDataOfFarmer">
+    <h3>Ihre Kontaktdaten</h3>
+
+    <a id="fillInPersonData" class="btn btn-lg btn-info"> <i class="fa fa-pencil"></i> <span>
+      Stammdaten einfügen</span> </a>
+    <p>
+
+  <div id="personDataForm">
+    @b3.inline.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
+      @b3.inputWrapped("text", harvestGuessForm("name"), '_hiddenLabel -> "Name", 'placeholder -> "Name") { input =>
+        <div class="input-group">
+          <label class="control-label">Name</label>
+          @input
+        </div>
+      }
+      @b3.inputWrapped("text", harvestGuessForm("address"), '_hiddenLabel -> "Adresse", 'placeholder -> "Adresse") { input =>
+        <div class="input-group">
+          <label class="control-label"><i class="fa fa-map-marker"></i> Adresse</label>
+          @input
+        </div>
+      }
+      @b3.inputWrapped("text", harvestGuessForm("phone"), '_hiddenLabel -> "Telefonnummer", 'placeholder -> "Telefonnummer") { input =>
+        <div class="input-group">
+          <label class="control-label"><i class="fa fa-phone"></i> Telefonnummer</label>
+          @input
+        </div>
+      }
+      @b3.inputWrapped("email", harvestGuessForm("email"), '_hiddenLabel -> "Email-Adresse", 'placeholder -> "Email-Adresse") { input =>
+        <div class="input-group">
+          <label class="control-label"><i class="fa fa-at"></i> Email-Adresse</label>
+          @input
+        </div>
+      }
+    }
+  </div>
+    <hr>
+
+    <h3>Ihr Betrieb</h3>
+    <div id="formAboutFarmerCompany">
+      @b3.inline.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
+        @b3.inputWrapped("text", harvestGuessForm("companyNumber"), '_hiddenLabel -> "Betriebsnummer", 'placeholder -> "Betriebsnummer") { input =>
+          <div class="input-group">
+            <label class="control-label">Betriebsnummer</label>
+            @input
+          </div>
+        }
+        @b3.inputWrapped("text", harvestGuessForm("vatRegistrationNr"), '_hiddenLabel -> "UID-Nummer", 'placeholder -> "UID-Nummer") { input =>
+          <div class="input-group">
+            <label class="control-label">UID-Nummer</label>
+            @input
+          </div>
+        }
+        @b3.inputWrapped("select", harvestGuessForm("inspectionBody"), '_hiddenLabel -> "Kontrollstelle") { input =>
+          <div class="input-group">
+            <label class="control-label">Kontrollstelle</label>
+            <br>
+              @b3.select(harvestGuessForm("inspectionBody"), options = inspectionBodies)
+          </div>
+        }
+      }
+      <p>
+        @b3.vertical.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
+          @b3.radio(harvestGuessForm("bioUnionOrCodex"), options = Seq("Ja" -> "Ja", "Nein" -> "Nein, ich bin ein Codex-Betrieb"), '_label -> "Sind Sie Mitglied bei einem Bio-Verband?")
+        }
+        @*TODO: Show bio unions when user selects yes*@
+      </p>
+    </div>
+
+    <hr>
+    <h3>Ihre Bank</h3>
+    <div id="farmersBankData">
+    @b3.inline.form(routes.HarvestGuessForm.showHarvestGuessFormContents) { implicit inlineFieldConstructor =>
+      @b3.text(harvestGuessForm("iban"), 'placeholder -> "IBAN")
+    }
+    </div>
+
+  </div>
+
+  <h3>Speisegetreide</h3>
+  <table class="table table-striped" >
+    <thead>
+      <tr>
+        <th>Getreideart</th>
+        <th>Hektar</th>
+        <th>Tonnen (cirka)</th>
+        <th>Status</th>
+        <th>Übernahmestelle/ Ab Feld</th>
+        <th>Anmerkungen</th>
+      </tr>
+    </thead>
+    <tbody id="grainForHumansTable">
+      <div id="grainRowId">@grainRow(harvestGuessForm, grainTypes)</div>
+    </tbody>
+  </table>
+
+  <a id="addGrainForHumansButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
+    Speisegetreide hinzufügen</span> </a>
+
+  <script>
+    $(document).ready(function(){
+      $('#addGrainForHumansButton').click(function(){
+        console.log("Button Clicked");
+        var $clonedRow = $('#grainRowId').clone();
+        console.log($clonedRow);
+        //$('#grainForHumansTable').append("<tr>" +$clonedRow.html()+"</tr>")
+      });
+    });
+  </script>
+
+  <hr>
+  <h3>Futtergetreide</h3>
+
+  <table class="table table-striped" >
+    <thead>
+      <tr>
+        <th>Getreideart</th>
+        <th>Hektar</th>
+        <th>Tonnen (cirka)</th>
+        <th>Status</th>
+        <th>Übernahmestelle/ Ab Feld</th>
+        <th>Anmerkungen</th>
+      </tr>
+    </thead>
+    <tbody id="grainForHumansTable">
+      <div id="grainRowId">@grainRow(harvestGuessForm, grainTypes)</div>
+    </tbody>
+  </table>
+
+  <a id="addGrainForAnimalsButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
+    Futtergetreide hinzufügen</span> </a>
+
+  <hr>
+
+  @b3.submit('class -> "btn btn-success") {
+    <span class="fa fa-4x fa-send"></span> <span id="submitHarvestGuessButtonText"> Abschicken</span>
+  }
+  <div id="finePrint">
+    <p>
+      Ich beabsichtige die oben angeführten Produkte der Ernte @harvestYear über die EZG Bio-Getreide OÖ zu vermarkten. Für die Einlagerung in unsere Gemeinschaftslager ist die
+      Mitgliedschaft bei der EZG Bio-Getreide OÖ und eine anerkannte Verbandsmitgliedschaft (Bio-Austria, Erde&Saat, usw.) Voraussetzung. Weiters erkläre ich mich damit
+      einverstanden, dass über meine Umsätze an den Verein mittels Gutschrift abgerechnet wird.
+    </p>
+  </div>
+}
