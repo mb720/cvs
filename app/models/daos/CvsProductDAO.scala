@@ -1,11 +1,13 @@
-package models
+package models.daos
 
 import java.util.Locale
 
-import slick.driver.PostgresDriver.api._
-import scala.concurrent.Future
-import play.api.db.DB
+import models.{CvsProductTable, CvsProduct}
 import play.api.Play.current
+import play.api.db.DB
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.Future
 
 trait DAOComponent {
 
@@ -16,7 +18,7 @@ trait DAOComponent {
   def count: Future[Int]
 }
 
-object DAO extends DAOComponent {
+object CvsProductDAO extends DAOComponent {
 
   private val products = TableQuery[CvsProductTable]
 

@@ -1,13 +1,12 @@
 package controllers
 
-import play.api.Logger
-
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Forms._
-import play.api.i18n.{MessagesApi, I18nSupport}
 import javax.inject.Inject
 
+import play.api.Logger
+import play.api.data.Forms._
+import play.api.data._
+import play.api.i18n.{I18nSupport, MessagesApi }
+import play.api.mvc._
 import views._
 
 class Application @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
@@ -26,7 +25,14 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
       "name" -> nonEmptyText,
       "repeat" -> number(min = 1, max = 100),
       "color" -> optional(text)
-    ))
+    )
+  )
+  val stringPairForm = Form(
+    tuple(
+      "name" -> nonEmptyText,
+      "other" -> nonEmptyText
+    )
+  )
 
   def index = Action {
     Ok(html.index(siteTitle, helloForm, bootstrapForm))
@@ -35,7 +41,7 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
   def sayHello = Action {
     implicit request =>
       helloForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.index(siteTitle, formWithErrors, bootstrapForm)), { case (name, repeat, color) => Ok(html.result(name, repeat.toInt, color)) }
+        formWithErrors => BadRequest(html.index(siteTitle, formWithErrors, bootstrapForm)), { case (name, repeat, color) => Ok(html.result(name, repeat.toInt, color)) }
       )
   }
 
@@ -52,17 +58,16 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
   //  }
   def test() = Action {
     Logger.info("testing")
-    val myMap = Map("1" -> "one", "2" -> "two")
-    Ok(html.viewTests(myMap, "This is nice"))
+    Ok(html.viewTests(stringPairForm, "Test"))
   }
 
   def showBootstrapFormContents() = Action {
     implicit request =>
       bootstrapForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(html.index(siteTitle, helloForm, formWithErrors)), { case (userEmail, password, remember) =>
-        val userInputAsMap = Map("Email" -> userEmail, "Password" -> password, "Remember me" -> String.valueOf(remember))
-        Ok(html.viewTests(userInputAsMap, "Nice"))
-      }
+        formWithErrors => BadRequest(html.index(siteTitle, helloForm, formWithErrors)), { case (userEmail, password, remember) =>
+          val userInputAsMap = Map("Email" -> userEmail, "Password" -> password, "Remember me" -> String.valueOf(remember))
+          Ok("...")
+        }
       )
   }
 }

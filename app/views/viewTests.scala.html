@@ -1,7 +1,29 @@
-@(someMap: Map[String, String], siteTitle: String)
-  @import common._
-  @import tags._
-  @mainLayout(title = siteTitle) {
-    @mapTable(someMap)
-  }
+@(testForm: Form[(String, String)], siteTitle: String)(implicit messages: Messages)
+@import tags._
 
+@main(title = siteTitle) {
+
+  <table class="table table-striped" >
+    <thead>
+      <tr>
+        <th>Some text</th>
+        <th>A selection</th>
+      </tr>
+    </thead>
+    <tbody id="myTestTableBody">
+    @myTestRow(testForm, "firstRowId")
+    </tbody>
+  </table>
+
+  <a id="addRowButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
+    Add a row</span> </a>
+
+  <script>
+    $(document).ready(function(){
+      $("#addRowButton").click(function(){
+        var $clonedRow = $("#firstRowId").clone();
+        $('#myTestTableBody').append("<tr id='otherRowId'>" +$clonedRow.html()+"</tr>")
+      });
+    });
+  </script>
+}

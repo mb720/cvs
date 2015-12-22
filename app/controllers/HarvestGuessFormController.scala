@@ -1,17 +1,16 @@
 package controllers
 
-import models.{FarmerPersonalData, HarvestGuessFromForm}
-import play.api.Logger
-import play.api.data.Form
-import play.api.i18n.{MessagesApi, I18nSupport}
 import javax.inject.Inject
 
-import play.api.mvc.{Action, Controller}
-
+import forms.data.{FarmerPersonalData, HarvestGuessFromForm}
+import play.api.Logger
+import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, Controller}
 import views.html
 
-class HarvestGuessForm @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
   val siteTitle = "Erntemeldung"
 
@@ -34,10 +33,6 @@ class HarvestGuessForm @Inject()(val messagesApi: MessagesApi) extends Controlle
 
   }
 
-  //  def showHarvestGuessFormContents(harvestGuessFromForm: HarvestGuessFromForm) = Action {
-  //    Ok("Danke für Ihre Erntemeldung: " + harvestGuessFromForm)
-  //  }
-
   def handleHarvestGuess() = Action { implicit request =>
     Logger.info("Handling harvest guess")
     //Ok("Harvest guess form was filled out")
@@ -48,7 +43,7 @@ class HarvestGuessForm @Inject()(val messagesApi: MessagesApi) extends Controlle
       },
       harvestGuessFromForm => {
         Logger.info("Harvest guess received: " + harvestGuessFromForm)
-        Redirect(routes.HarvestGuessForm.harvestGuessPosted())
+        Redirect(routes.HarvestGuessFormController.harvestGuessPosted())
       }
     )
   }

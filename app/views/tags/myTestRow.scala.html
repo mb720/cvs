@@ -1,0 +1,10 @@
+@(testForm: Form[(String, String)], rowId: String)(implicit messages: Messages)
+
+@import b3.vertical.fieldConstructor
+@myTestOptions = @{
+  List("Option A", "Option B").map(str => str -> str)
+}
+<tr id=@rowId>
+  <td>@b3.text(testForm("textFieldName"), 'placeholder -> "Enter text")</td>
+  <td>@b3.select(testForm("selectionName"), options = myTestOptions) </td>
+</tr>

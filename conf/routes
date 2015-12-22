@@ -12,6 +12,9 @@ GET         /hello                           @controllers.Application.sayHello
 
 GET         /test                            @controllers.Application.test
 
+GET         /signIn                          @controllers.SignInController.signIn
+POST        /authenticate/credentials        @controllers.CredentialsAuthController.authenticate
+
 GET         /showBoot                        @controllers.Application.showBootstrapFormContents
 
 GET         /products                        @controllers.CvsProducts.listProducts
@@ -21,9 +24,10 @@ POST        /postNewProduct                  @controllers.CvsProducts.handleNewP
 GET         /uploadForm                      @controllers.FileUpload.uploadForm
 POST        /upload                          @controllers.FileUpload.handleUpload
 
-GET         /erntemeldung                    @controllers.HarvestGuessForm.showForm
-POST        /erntemeldungEinschicken         @controllers.HarvestGuessForm.handleHarvestGuess
-GET         /erntemeldungEingeschickt        @controllers.HarvestGuessForm.harvestGuessPosted
+GET         /erntemeldung                    @controllers.HarvestGuessFormController.showForm
+POST        /erntemeldungEinschicken         @controllers.HarvestGuessFormController.handleHarvestGuess
+GET         /erntemeldungEingeschickt        @controllers.HarvestGuessFormController.harvestGuessPosted
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                    @controllers.Assets.versioned(path="/public", file: Asset)
+GET         /webjars/*file                   controllers.WebJarAssets.at(file)

@@ -1,7 +1,8 @@
 package controllers
 
+import models.daos.CvsProductDAO
 import play.api.mvc._
-import models.{DAO, CvsProduct}
+import models.CvsProduct
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.{MessagesApi, I18nSupport}
@@ -31,7 +32,7 @@ class CvsProducts @Inject()(val messagesApi: MessagesApi) extends Controller wit
         BadRequest(views.html.product.form(formWithErrors))
       },
       newProduct => {
-        DAO.insert(newProduct)
+        CvsProductDAO.insert(newProduct)
         val successMsg = s"${newProduct.name} saved successfully"
         Redirect(routes.CvsProducts.showProductForm()).flashing("success" -> successMsg)
       }
@@ -39,7 +40,7 @@ class CvsProducts @Inject()(val messagesApi: MessagesApi) extends Controller wit
   }
 
   def listProducts = Action.async {
-    val futureProductNames = DAO.getAll.map(_.map(_.name))
+    val futureProductNames = CvsProductDAO.getAll.map(_.map(_.name))
     val futureProductNamesCombined = futureProductNames.map(_.mkString("\n"))
     futureProductNamesCombined.map(msgs => Ok(s"Listing products:\n$msgs"))
   }

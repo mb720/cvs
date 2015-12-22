@@ -1,4 +1,4 @@
-package models
+package forms.data
 
 /**
   * Created by Matthias Braun on 11/18/2015.
