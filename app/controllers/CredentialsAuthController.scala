@@ -11,6 +11,7 @@ import com.mohiva.play.silhouette.impl.providers._
 import forms.SignInForm
 import models.User
 import models.services.UserService
+import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
@@ -39,8 +40,9 @@ class CredentialsAuthController @Inject()(val messagesApi: MessagesApi,
     * @return The result to display.
     */
   def authenticate = Action.async { implicit request =>
+    Logger.info("Authenticating")
     SignInForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.signIn(form))),
+      form => Future.successful(BadRequest("Bad request")),
       data => {
         val credentials = Credentials(data.email, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>

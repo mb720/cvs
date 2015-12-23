@@ -19,3 +19,4 @@ server.pid
 .idea
 activator-launch-*.jar
 activator.bat
+/conf/generated.keystore

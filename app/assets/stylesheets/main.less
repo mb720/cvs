@@ -1,5 +1,7 @@
 @greyForSeparators: #CCC;
 @veryDarkGreySlightlyGreen: #001c00;
+@veryBrightYellow: #FDFDE3;
+@veryBrightGreen: #bfffa3;
 body {
   // Center the content
   margin: 0 auto;
@@ -9,15 +11,21 @@ body {
 #formHeader {
   background: url("../images/ezg_hintergrund_hell.jpg");
   padding: 10px;
+  // Text color
   color: @veryDarkGreySlightlyGreen;
 }
 
 #personalAndCompanyDataOfFarmer {
   border-bottom: 2px solid @greyForSeparators;
   padding: 10px;
+  // Text color
   color: @veryDarkGreySlightlyGreen;
+  background-color: @veryBrightYellow;
 }
 
+#harvestGuess {
+  color: @veryDarkGreySlightlyGreen;
+}
 #submitHarvestGuessButtonText {
   // This actually puts the text in the vertical center
   vertical-align: text-bottom;
@@ -31,7 +39,7 @@ body {
 
 #thankYouArea {
   #thankYouText {
-    // Put the text at the quarter of the screen height
+    // Put the text at a quarter of the screen height
     position: relative;
     top: 25%;
     -webkit-transform: translateY(-25%);
@@ -62,14 +70,17 @@ body {
 
   background: url("../images/ezg_hintergrund.jpg");
 }
+
 // Classes
 .show {
   display: block !important;
 }
+
 .hidden {
   display: none !important;
   visibility: hidden !important;
 }
+
 .invisible {
   visibility: hidden;
 }

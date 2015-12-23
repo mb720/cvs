@@ -30,7 +30,6 @@ class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends
   def showForm() = Action {
     Logger.info("Showing harvest guess")
     Ok(html.harvest.harvestGuess(siteTitle, form))
-
   }
 
   def handleHarvestGuess() = Action { implicit request =>
@@ -49,6 +48,6 @@ class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends
   }
 
   def harvestGuessPosted() = Action {
-    Ok(html.harvest.showHarvestGuess(siteTitle))
+    Ok(html.harvest.harvestGuessCompleted(siteTitle))
   }
 }
