@@ -2,15 +2,18 @@ package controllers
 
 import javax.inject.Inject
 
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import models.CvsUser
 import play.api.Logger
 import play.api.data.Forms._
 import play.api.data._
-import play.api.i18n.{I18nSupport, MessagesApi }
+import play.api.i18n.MessagesApi
 import play.api.mvc._
 import views._
 
-class Application @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
-
+class Application @Inject()(val messagesApi: MessagesApi, val env: Environment[CvsUser, CookieAuthenticator])
+  extends Silhouette[CvsUser, CookieAuthenticator] {
   val siteTitle = "CVS"
 
   val bootstrapForm = Form(
@@ -27,14 +30,13 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
       "color" -> optional(text)
     )
   )
-  val stringPairForm = Form(
-    tuple(
-      "name" -> nonEmptyText,
-      "other" -> nonEmptyText
-    )
-  )
 
-  def index = Action {
+  def index = UserAwareAction { implicit request =>
+    val userName = request.identity match {
+      case Some(identity) => identity.fullName
+      case None => "Guest"
+    }
+    Logger.info(s"Hi, $userName")
     Ok(html.index(siteTitle, helloForm, bootstrapForm))
   }
 
@@ -43,22 +45,6 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
       helloForm.bindFromRequest.fold(
         formWithErrors => BadRequest(html.index(siteTitle, formWithErrors, bootstrapForm)), { case (name, repeat, color) => Ok(html.result(name, repeat.toInt, color)) }
       )
-  }
-
-  //  def listMsgs = Action.async {
-  //    val futureMsgContent = DAO.getAll.map(_.map(_.content))
-  //    val futureMsgsCombined = futureMsgContent.map(_.mkString("\n"))
-  //    futureMsgsCombined.map(msgs => Ok(s"Listing messages:\n$msgs"))
-  //  }
-
-  //  def newMsg(content: String) = Action {
-  //    Logger.debug(s"Storing this message in DB: $content")
-  //    DAO.insert(Message(Option(1L), content))
-  //    Redirect(routes.Application.listMsgs())
-  //  }
-  def test() = Action {
-    Logger.info("testing")
-    Ok(html.viewTests(stringPairForm, "Test"))
   }
 
   def showBootstrapFormContents() = Action {
@@ -70,4 +56,5 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
         }
       )
   }
+
 }

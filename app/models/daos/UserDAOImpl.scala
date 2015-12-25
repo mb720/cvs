@@ -3,7 +3,7 @@ package models.daos
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import models.User
+import models.CvsUser
 import models.daos.UserDAOImpl._
 
 import scala.collection.mutable
@@ -38,7 +38,7 @@ class UserDAOImpl extends UserDAO {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = {
+  def save(user: CvsUser) = {
     users += (user.userID -> user)
     Future.successful(user)
   }
@@ -52,5 +52,5 @@ object UserDAOImpl {
   /**
    * The list of users.
    */
-  val users: mutable.HashMap[UUID, User] = mutable.HashMap()
+  val users: mutable.HashMap[UUID, CvsUser] = mutable.HashMap()
 }

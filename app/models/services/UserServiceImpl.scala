@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
-import models.User
+import models.CvsUser
 import models.daos.UserDAO
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -24,7 +24,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @param loginInfo The login info to retrieve a user.
    * @return The retrieved user or None if no user could be retrieved for the given login info.
    */
-  def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.find(loginInfo)
+  def retrieve(loginInfo: LoginInfo): Future[Option[CvsUser]] = userDAO.find(loginInfo)
 
   /**
    * Saves a user.
@@ -32,7 +32,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = userDAO.save(user)
+  def save(user: CvsUser) = userDAO.save(user)
 
   /**
    * Saves the social profile for a user.
@@ -53,7 +53,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
           avatarURL = profile.avatarURL
         ))
       case None => // Insert a new user
-        userDAO.save(User(
+        userDAO.save(CvsUser(
           userID = UUID.randomUUID(),
           loginInfo = profile.loginInfo,
           firstName = profile.firstName,

@@ -8,8 +8,6 @@ GET         /                                controllers.Application.index
 #GET     /newMsg                     controllers.Application.newMsg(content:String)
 GET         /hello                           controllers.Application.sayHello
 
-GET         /test                            controllers.Application.test
-
 GET         /signIn                          controllers.SignInController.signIn
 POST        /authenticate/credentials        controllers.CredentialsAuthController.authenticate
 
