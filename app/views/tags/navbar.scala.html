@@ -15,6 +15,7 @@
       <ul class="nav navbar-nav">
         <li><a href="@routes.Application.index">@Messages("home")</a></li>
 
+        <li><a href="http://www.ezg-bio-getreide.at/">Erzeugergemeinschaft</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
           <ul class="dropdown-menu">
@@ -24,11 +25,20 @@
           </ul>
         </li>
       </ul>
+
       <ul class="nav navbar-nav navbar-right">
       @userMaybe.map { user =>
       <li><a href="@routes.Application.index">@user.fullName</a></li>
+      <li class ="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog fa-lg"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="@routes.UserAuthenticationController.signOut">@Messages("sign.out")</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Something else</a></li>
+        </ul>
+      </li>
       }.getOrElse {
-        <li><a href="@routes.SignInController.signIn">@Messages("sign.in")</a></li>
+        <li><a href="@routes.UserAuthenticationController.showSignInForm">@Messages("sign.in")</a></li>
       }
       </ul>
     </nav>

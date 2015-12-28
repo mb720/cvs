@@ -8,10 +8,9 @@ GET         /                                controllers.Application.index
 #GET     /newMsg                     controllers.Application.newMsg(content:String)
 GET         /hello                           controllers.Application.sayHello
 
-GET         /signIn                          controllers.SignInController.signIn
-POST        /authenticate/credentials        controllers.CredentialsAuthController.authenticate
-
-GET         /showBoot                        controllers.Application.showBootstrapFormContents
+GET         /signIn                          controllers.UserAuthenticationController.showSignInForm
+GET         /signOut                         controllers.UserAuthenticationController.signOut
+POST        /authenticate/credentials        controllers.UserAuthenticationController.authenticate
 
 GET         /products                        controllers.CvsProducts.listProducts
 GET         /products/new                    controllers.CvsProducts.showProductForm

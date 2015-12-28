@@ -2,16 +2,20 @@ package controllers
 
 import javax.inject.Inject
 
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import forms.data.{FarmerPersonalData, HarvestGuessFromForm}
+import models.CvsUser
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, Controller}
+import play.api.i18n.MessagesApi
+import play.api.mvc.Action
 import views.html
 
-class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
-
+//class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi, val env: Environment[CvsUser, CookieAuthenticator])
+  extends Silhouette[CvsUser, CookieAuthenticator] {
   val siteTitle = "Erntemeldung"
 
   val form = Form(
@@ -25,20 +29,22 @@ class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends
     )(HarvestGuessFromForm.apply)(HarvestGuessFromForm.unapply)
   )
 
-  //
   // Put the data the user has entered in the form into an object using its companion object
-  def showForm() = Action {
+  def showForm = UserAwareAction { request =>
     Logger.info("Showing harvest guess")
-    Ok(html.harvest.harvestGuess(siteTitle, form))
+    val user = request.identity
+    Logger.info(s"User: $user")
+    Ok(html.harvest.harvestGuess(siteTitle, form, user))
   }
 
-  def handleHarvestGuess() = Action { implicit request =>
+  def handleHarvestGuess = UserAwareAction { implicit request =>
+    val userMaybe= request.identity
     Logger.info("Handling harvest guess")
     //Ok("Harvest guess form was filled out")
     form.bindFromRequest.fold(
       formWithErrors => {
         Logger.info("Harvest guess has errors: " + formWithErrors.errors)
-        BadRequest(views.html.harvest.harvestGuess(siteTitle, formWithErrors))
+        BadRequest(views.html.harvest.harvestGuess(siteTitle, formWithErrors, userMaybe))
       },
       harvestGuessFromForm => {
         Logger.info("Harvest guess received: " + harvestGuessFromForm)
@@ -47,7 +53,8 @@ class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends
     )
   }
 
-  def harvestGuessPosted() = Action {
-    Ok(html.harvest.harvestGuessCompleted(siteTitle))
+  def harvestGuessPosted() = UserAwareAction { request =>
+    val user = request.identity
+    Ok(html.harvest.harvestGuessCompleted(siteTitle, user ))
   }
 }

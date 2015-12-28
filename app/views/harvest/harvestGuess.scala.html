@@ -1,6 +1,5 @@
-@(siteTitle: String, harvestGuessForm: Form[forms.data.HarvestGuessFromForm])(implicit messages: Messages)
+@(siteTitle: String, harvestGuessForm: Form[forms.data.HarvestGuessFromForm], userMaybe: Option[CvsUser])(implicit messages: Messages)
 @import b3.vertical.fieldConstructor
-
 @import tags.harvestGuess.grainRow
 
 @harvestYear = @{
@@ -19,7 +18,7 @@
   List("Weizen", "Roggen", "Dinkel")
 }
 
-@main(title = siteTitle) {
+@main(siteTitle, userMaybe) {
   <div id="formHeader">
     <h1>Erntemeldung</h1>
     <h4>für die Vermarktung und Vermittlung von Biogetreide der Ernte @harvestYear</h4>
@@ -117,7 +116,7 @@
           </div>
         }
         <p>
-          @b3.radio(harvestGuessForm("bioUnionOrCodex"), options = Seq("Ja" -> "Ja", "Nein" -> "Nein, ich bin ein Codex-Betrieb"), '_label -> "Sind Sie Mitglied bei einem Bio-Verband?")
+        @b3.radio(harvestGuessForm("bioUnionOrCodex"), options = Seq("Ja" -> "Ja", "Nein" -> "Nein, ich bin ein Codex-Betrieb"), '_label -> "Sind Sie Mitglied bei einem Bio-Verband?")
         </p>
 
         <div id="bioUnionSelection" class="hidden">
@@ -165,72 +164,72 @@
     </div>
 
   <div id="harvestGuess">
-  <h2>Ihre voraussichtliche Ernte</h2>
-  <h3>Speisegetreide</h3>
-  <table class="table table-striped" >
-    <thead>
-      <tr>
-        <th>Getreideart</th>
-        <th>Hektar</th>
-        <th>Tonnen (cirka)</th>
-        <th>Status</th>
-        <th>Übernahmestelle/ Ab Feld</th>
-        <th>Anmerkungen</th>
-      </tr>
-    </thead>
-    <tbody id="grainForHumansTable">
-    @grainRow(harvestGuessForm, grainTypes, "grainRowForHumansId")
-    </tbody>
-  </table>
+    <h2>Ihre voraussichtliche Ernte</h2>
+    <h3>Speisegetreide</h3>
+    <table class="table table-striped" >
+      <thead>
+        <tr>
+          <th>Getreideart</th>
+          <th>Hektar</th>
+          <th>Tonnen (cirka)</th>
+          <th>Status</th>
+          <th>Übernahmestelle/ Ab Feld</th>
+          <th>Anmerkungen</th>
+        </tr>
+      </thead>
+      <tbody id="grainForHumansTable">
+      @grainRow(harvestGuessForm, grainTypes, "grainRowForHumansId")
+      </tbody>
+    </table>
 
-  <a id="addGrainForHumansButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
-    Speisegetreide hinzufügen</span> </a>
+    <a id="addGrainForHumansButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
+      Speisegetreide hinzufügen</span> </a>
 
-  <script>
-    $(document).ready(function(){
-      $('#addGrainForHumansButton').click(function(){
-        var $clonedRow = $('#grainRowForHumansId').clone();
-        $('#grainForHumansTable').append("<tr id='otherRowId'>" +$clonedRow.html()+"</tr>")
+    <script>
+      $(document).ready(function(){
+        $('#addGrainForHumansButton').click(function(){
+          var $clonedRow = $('#grainRowForHumansId').clone();
+          $('#grainForHumansTable').append("<tr id='otherRowId'>" +$clonedRow.html()+"</tr>")
+        });
       });
-    });
-  </script>
+    </script>
 
-  <hr>
-  <h3>Futtergetreide</h3>
+    <hr>
+    <h3>Futtergetreide</h3>
 
-  <table class="table table-striped" >
-    <thead>
-      <tr>
-        <th>Getreideart</th>
-        <th>Hektar</th>
-        <th>Tonnen (cirka)</th>
-        <th>Status</th>
-        <th>Übernahmestelle/ Ab Feld</th>
-        <th>Anmerkungen</th>
-      </tr>
-    </thead>
-    <tbody id="grainForAnimalsTable">
-    @grainRow(harvestGuessForm, grainTypes, "grainRowForAnimalsId")
-    </tbody>
-  </table>
+    <table class="table table-striped" >
+      <thead>
+        <tr>
+          <th>Getreideart</th>
+          <th>Hektar</th>
+          <th>Tonnen (cirka)</th>
+          <th>Status</th>
+          <th>Übernahmestelle/ Ab Feld</th>
+          <th>Anmerkungen</th>
+        </tr>
+      </thead>
+      <tbody id="grainForAnimalsTable">
+      @grainRow(harvestGuessForm, grainTypes, "grainRowForAnimalsId")
+      </tbody>
+    </table>
 
-  <a id="addGrainForAnimalsButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
-    Futtergetreide hinzufügen</span> </a>
+    <a id="addGrainForAnimalsButton" class="btn btn-lg btn-primary"> <i class="fa fa-plus "></i> <span>
+      Futtergetreide hinzufügen</span> </a>
 
-  <script>
-    $(document).ready(function(){
-      $("#addGrainForAnimalsButton").click(function(){
-        var $clonedRow = $("#grainRowForAnimalsId").clone();
-        $("#grainForAnimalsTable").append("<tr>" + $clonedRow.html() + "</tr>")
+    <script>
+      $(document).ready(function(){
+        $("#addGrainForAnimalsButton").click(function(){
+          var $clonedRow = $("#grainRowForAnimalsId").clone();
+          $("#grainForAnimalsTable").append("<tr>" + $clonedRow.html() + "</tr>")
+        });
       });
-    });
-  </script>
-  <hr>
+    </script>
+    <hr>
 
-  @b3.submit('class -> "btn btn-success") {
-    <span class="fa fa-4x fa-send"></span> <span id="submitHarvestGuessButtonText"> Formular abschicken</span>
-  }
-}
+    @b3.submit('class -> "btn btn-success") {
+      <span class="fa fa-4x fa-send"></span> <span id="submitHarvestGuessButtonText"> Formular abschicken</span>
+    }
+    }
   </div>
   <div id="finePrint">
     <p>

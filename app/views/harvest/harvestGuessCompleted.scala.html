@@ -1,8 +1,12 @@
-@(siteTitle: String)(implicit messages: Messages)
+@(siteTitle: String, userMaybe: Option[CvsUser])(implicit messages: Messages)
 
-@main(title = siteTitle) {
-  <div id="thankYouArea">
-    <div id="thankYouText">Danke für Ihre Erntemeldung</div>
-    <div id="goodLuckForHarvestText">Wir wünschen eine reiche Ernte 2016</div>
-  </div>
-}
+  @main(siteTitle, userMaybe) {
+    <div id="thankYouArea">
+      @if(userMaybe.isDefined) {
+        <div id="thankYouText">Danke für Deine Erntemeldung, @userMaybe.get.firstName</div>
+      } else {
+        <div id="thankYouText">Danke für Deine Erntemeldung</div>
+      }
+      <div id="goodLuckForHarvestText">Wir wünschen eine reiche Ernte 2016</div>
+    </div>
+  }

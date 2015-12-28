@@ -1,53 +1,47 @@
-@(siteTitle: String, helloForm: Form[(String,Int,Option[String])], bootstrapForm:Form[(String, String, Boolean)])(implicit messages: Messages)
+@(siteTitle: String, helloForm: Form[(String, Int, Option[String])], userMaybe: Option[CvsUser])(implicit messages: Messages)
 
-@import b3.vertical.fieldConstructor
-@import helper._
+  @import helper._
 
-@main(title = siteTitle) {
-    <h1>Please enter your data</h1>
+  @main(siteTitle, userMaybe) {
+    @if(userMaybe.isDefined) {
+      <h1>Welcome, @userMaybe.get.fullName</h1>
+    }
+
+    <h2>Please enter your data</h2>
 
     @form(action = routes.Application.sayHello, args = 'id -> "helloform") {
 
       @inputText(
-          field = helloForm("name"),
-          args = '_label -> "What's your name?", 'placeholder -> "John Doe"
+        field = helloForm("name"),
+        args = '_label -> "What's your name?", 'placeholder -> "John Doe"
       )
 
       @inputText(
-          field = helloForm("repeat"),
-          args = '_label -> "How many times?", 'size -> 3, 'placeholder -> 10
+        field = helloForm("repeat"),
+        args = '_label -> "How many times?", 'size -> 3, 'placeholder -> 10
       )
       @select(
-          field = helloForm("color"),
-          options = options(
-              "" -> "Default",
-              "red" -> "Red",
-              "green" -> "Green",
-              "blue" -> "Blue"
-          ),
-          args = '_label -> "Choose a color"
+        field = helloForm("color"),
+        options = options(
+          "" -> "Default",
+          "red" -> "Red",
+          "green" -> "Green",
+          "blue" -> "Blue"
+        ),
+        args = '_label -> "Choose a color"
       )
       <p class="buttons"> <input type="submit" id="submit"> <p>
     }
 
-  <div id="bootstrapTestForm">
-  @b3.form(routes.Application.showBootstrapFormContents) {
-    @b3.email(bootstrapForm("email"), '_label -> "Email", 'placeholder -> "example@mail.com")
-    @b3.password(bootstrapForm("password"), '_label -> "Password", 'placeholder -> "Password")
-    @b3.checkbox(bootstrapForm("rememberMe"), '_text -> "Remember me", 'value -> true)
-    @b3.submit('class -> "btn btn-default") { Sign in }
+    <div id="contactMeSection">
+  <p>
+    <a id="contactMeButton" class="btn btn-lg btn-primary"
+    href="mailto:office@@bullbytes.com" >
+      <span id="contactMeButtonText">Schreiben Sie uns über diesen Knopf</span>
+      <i class="fa fa-paper-plane fa-3x pull-center"></i>
+    </a>
+  </p>
+    </div>
+
   }
-  </div>
-
-  <div id="contactMeSection">
-    <p>
-      <a id="contactMeButton" class="btn btn-lg btn-primary"
-      href="mailto:office@@bullbytes.com" >
-        <span id="contactMeButtonText">Schreiben Sie uns über diesen Knopf</span>
-        <i class="fa fa-paper-plane fa-3x pull-center"></i>
-      </a>
-    </p>
-  </div>
-
-}
 

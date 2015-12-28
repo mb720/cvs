@@ -1,4 +1,4 @@
-@(title: String, userMaybe: Option[models.CvsUser] = None)(content: Html)(implicit messages: Messages)
+@(title: String, userMaybe: Option[models.CvsUser])(content: Html)(implicit messages: Messages)
 <!DOCTYPE html>
 
 <html lang="en">
@@ -12,13 +12,11 @@
 
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
     <link rel="stylesheet" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-
     @* We specify these client-side libraries as dependencies in build.sbt *@
     <link rel="stylesheet" href="@routes.WebJarAssets.at(WebJarAssets.locate("font-awesome.min.css"))">
     <script type="text/javascript" src="@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))"></script>
     @* To use, for example, the dropdown menus in the navbar, we need to load this library after loading jQuery *@
     <script type="text/javascript" src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
-
     @* Override the default look of the bootstrap navbar (has to be applied after bootstrap.css to work) *@
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/navbar.css")">
   </head>
@@ -26,9 +24,9 @@
   <body>
     @tags.navbar(userMaybe)
 
-    <div id="mainContainer">
-    @content
-    </div>
+  <div id="mainContainer">
+  @content
+  </div>
 
   </body>
 
