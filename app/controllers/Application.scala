@@ -22,7 +22,7 @@ class Application @Inject()(val messagesApi: MessagesApi, val env: Environment[C
     )
   )
 
-  def index = UserAwareAction { request =>
+  def index = UserAwareAction { implicit request =>
     Ok(html.index(siteTitle, helloForm, request.identity))
   }
 

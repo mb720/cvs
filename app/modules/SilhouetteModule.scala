@@ -25,12 +25,12 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.WSClient
 
 /**
-  * The Guice module which wires all Silhouette dependencies. Add this class to `application.conf` via `play.modules.enabled+=thisClass`
+  * This class wires all Silhouette dependencies together. Add this class to `application.conf` via `play.modules.enabled+=thisClass`
   */
 class SilhouetteModule extends AbstractModule with ScalaModule {
 
   /**
-    * Configures the module.
+    * Configures the module
     */
   def configure() {
     bind[UserService].to[UserServiceImpl]
@@ -45,21 +45,21 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
   /**
-    * Provides the HTTP layer implementation.
+    * Provides the HTTP layer implementation
     *
-    * @param client Play's WS client.
-    * @return The HTTP layer implementation.
+    * @param client Play's WS client
+    * @return the HTTP layer implementation
     */
   @Provides
   def provideHTTPLayer(client: WSClient): HTTPLayer = new PlayHTTPLayer(client)
 
   /**
-    * Provides the Silhouette environment.
+    * Provides the Silhouette environment
     *
-    * @param userService The user service implementation.
-    * @param authenticatorService The authentication service implementation.
-    * @param eventBus The event bus instance.
-    * @return The Silhouette environment.
+    * @param userService the user service implementation
+    * @param authenticatorService the authentication service implementation
+    * @param eventBus the event bus instance
+    * @return the Silhouette environment
     */
   @Provides
   def provideEnvironment(
@@ -76,13 +76,13 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
   /**
-    * Provides the authenticator service.
+    * Provides the authenticator service
     *
-    * @param fingerprintGenerator The fingerprint generator implementation.
-    * @param idGenerator The ID generator implementation.
-    * @param configuration The Play configuration.
-    * @param clock The clock instance.
-    * @return The authenticator service.
+    * @param fingerprintGenerator the fingerprint generator implementation
+    * @param idGenerator the ID generator implementation
+    * @param configuration the Play configuration
+    * @param clock the clock instance
+    * @return the authenticator service
     */
   @Provides
   def provideAuthenticatorService(
@@ -91,15 +91,16 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
                                    configuration: Configuration,
                                    clock: Clock): AuthenticatorService[CookieAuthenticator] = {
 
+    // The configuration for this is in conf/silhouette.conf
     val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
-    new CookieAuthenticatorService(config, None, fingerprintGenerator, idGenerator, clock)
+    new CookieAuthenticatorService(config, dao = None, fingerprintGenerator, idGenerator, clock)
   }
 
   /**
     * Provides the auth info repository.
     *
-    * @param passwordInfoDAO The implementation of the delegable password auth info DAO.
-    * @return The auth info repository instance.
+    * @param passwordInfoDAO the implementation of the delegable password auth info DAO
+    * @return the auth info repository instance
     */
   @Provides
   def provideAuthInfoRepository(passwordInfoDAO: DelegableAuthInfoDAO[PasswordInfo]): AuthInfoRepository = {
@@ -109,15 +110,14 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   /**
     * Provides the credentials provider.
     *
-    * @param authInfoRepository The auth info repository implementation.
-    * @param passwordHasher The default password hasher implementation.
-    * @return The credentials provider.
+    * @param authInfoRepository the auth info repository implementation
+    * @param passwordHasher the default password hasher implementation
+    * @return the credentials provider
     */
   @Provides
   def provideCredentialsProvider(
                                   authInfoRepository: AuthInfoRepository,
                                   passwordHasher: PasswordHasher): CredentialsProvider = {
-
     new CredentialsProvider(authInfoRepository, passwordHasher, Seq(passwordHasher))
   }
 }

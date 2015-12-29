@@ -80,7 +80,8 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi, val e
     * @return the result of the page to which we redirect the signed out user
     */
   def signOut = SecuredAction.async { implicit request =>
-    val result = Redirect(routes.Application.index())
+    val result = Redirect(routes.Application.index()).flashing("success" -> Messages("sign.out.success"))
+
     env.authenticatorService.discard(request.authenticator, result)
   }
 

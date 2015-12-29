@@ -24,6 +24,8 @@ password = Password
 sign.up = Sign up
 sign.in = Sign in
 sign.out = Sign out
+sign.out.success = You signed out successfully
+
 sign.in.now = Sign in now
 sign.up.now = Sign up now
 already.a.member = Already a member?
