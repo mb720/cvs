@@ -6,6 +6,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
+// Add this resovler first to avoid problems: https://github.com/mohiva/play-silhouette-seed/issues/20#issuecomment-75367376
+resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
+
 routesGenerator := InjectedRoutesGenerator
 
 // Without this, only main.less is applied to the websites. Differently named .less files are ignored.
