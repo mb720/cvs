@@ -2,16 +2,20 @@ package controllers
 
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import models.CvsUser
+import modules.EnvironmentModule
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import views._
 
-class Application @Inject()(val messagesApi: MessagesApi, val env: Environment[CvsUser, CookieAuthenticator]) extends Silhouette[CvsUser, CookieAuthenticator] {
+//class Application @Inject()(val messagesApi: MessagesApi, val env: Environment[CvsUser, CookieAuthenticator]) extends Silhouette[CvsUser, CookieAuthenticator] {
+
+class Application @Inject()(val messagesApi: MessagesApi) extends Silhouette[CvsUser, CookieAuthenticator] with EnvironmentModule {
+
   val siteTitle = "CVS"
 
   val helloForm = Form(

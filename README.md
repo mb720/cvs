@@ -4,6 +4,7 @@ Scala and Play adventures
 ## Getting started
 
 Before starting this application locally, make sure there is a [Postgres](http://www.postgresql.org/) database:
+
     createdb -U postgres cvsDB
 
 Then you can start the application and make it listen on port 9000 for HTTP requests and for HTTPS requests on port 9005 using a command like this:

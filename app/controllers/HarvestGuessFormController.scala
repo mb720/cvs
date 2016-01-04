@@ -6,6 +6,7 @@ import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import forms.data.{FarmerPersonalData, HarvestGuessFromForm}
 import models.CvsUser
+import modules.EnvironmentModule
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
@@ -13,9 +14,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.Action
 import views.html
 
-//class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
-class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi, val env: Environment[CvsUser, CookieAuthenticator])
-  extends Silhouette[CvsUser, CookieAuthenticator] {
+  class HarvestGuessFormController @Inject()(val messagesApi: MessagesApi) extends Silhouette[CvsUser, CookieAuthenticator] with EnvironmentModule{
   val siteTitle = "Erntemeldung"
 
   val form = Form(

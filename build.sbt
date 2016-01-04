@@ -11,7 +11,7 @@ resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: 
 
 routesGenerator := InjectedRoutesGenerator
 
-// Without this, only main.less is applied to the websites. Differently named .less files are ignored.
+// Without this, only main.less is applied to the websites; differently named .less files are ignored.
 includeFilter in(Assets, LessKeys.less) := "*.less"
 
 //pipelineStages := Seq(uglify, digest, gzip)
@@ -23,13 +23,11 @@ libraryDependencies ++= Seq(
   filters,
   ws,
   evolutions,
+  // Persistence
   "com.typesafe.slick" %% "slick" % "3.0.0",
   "org.postgresql" % "postgresql" % "9.4-1204-jdbc42",
+  // Lets us use Twitter Bootstrap forms and buttons in our templates
   "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24",
-  // Dependency injection
-  "net.codingwell" %% "scala-guice" % "4.0.0",
-  // Used for (dependency injection) configuration
-  "net.ceedubs" %% "ficus" % "1.1.2",
   // User authentication
   "com.mohiva" %% "play-silhouette" % "3.0.4",
   // Manages client-side dependencies such as jQuery
