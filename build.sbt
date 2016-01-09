@@ -36,8 +36,6 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.5.0"
 )
 
-herokuAppName in Compile := "ezgportal"
-
 scalacOptions ++= Seq(
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
   "-feature", // Emit warning and location for usages of features that should be imported explicitly.
@@ -51,3 +49,4 @@ scalacOptions ++= Seq(
   "-Ywarn-numeric-widen" // Warn when numerics are widened.
 )
 
+herokuAppName in Compile := "ezgportaltest"

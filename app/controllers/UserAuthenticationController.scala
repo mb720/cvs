@@ -43,7 +43,7 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
               env.authenticatorService.create(loginInfo).map {
                 case authenticator => authenticator
               }.flatMap { authenticator =>
-                // If we use a CookieAuthenticator, we need to configure it in conf/silhouette.conf
+                // The authenticator service is configured in the AuthenticatorServiceModule
                 env.authenticatorService.init(authenticator).flatMap { value =>
                   env.authenticatorService.embed(value, result)
                 }

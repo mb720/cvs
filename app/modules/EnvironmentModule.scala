@@ -10,7 +10,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 /**
   * Provides the Silhouette environment that includes the module that deals with user authentication and user management (i.e., add, remove, find).
-  * Controllers extending this trait can make sure their actions are only used by authorized users.
+  * Controllers extending this trait can make sure their actions are only called by authorized users.
   */
 trait EnvironmentModule extends AuthenticatorServiceModule with UserServiceModule with AuthInfoServiceModule with CredentialsProviderModule {
 
@@ -19,12 +19,10 @@ trait EnvironmentModule extends AuthenticatorServiceModule with UserServiceModul
   lazy val authInfoDAO = new PasswordInfoDAO
   lazy val passwordHasher = new BCryptPasswordHasher
 
-  implicit lazy val env: Environment[CvsUser, CookieAuthenticator] = {
-    Environment[CvsUser, CookieAuthenticator](
-      userService,
-      authenticatorService,
-      // We have no request providers
-      Seq(),
-      eventBus)
-  }
+  lazy val env = Environment[CvsUser, CookieAuthenticator](
+    userService,
+    authenticatorService,
+    // We have no request providers
+    Nil,
+    eventBus)
 }

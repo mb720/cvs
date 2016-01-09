@@ -12,8 +12,6 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import views._
 
-//class Application @Inject()(val messagesApi: MessagesApi, val env: Environment[CvsUser, CookieAuthenticator]) extends Silhouette[CvsUser, CookieAuthenticator] {
-
 class Application @Inject()(val messagesApi: MessagesApi) extends Silhouette[CvsUser, CookieAuthenticator] with EnvironmentModule {
 
   val siteTitle = "CVS"
