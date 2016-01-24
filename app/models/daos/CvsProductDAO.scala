@@ -28,32 +28,25 @@ object CvsProductDAO extends DAOComponent {
     products.filter(_.id === id)
 
   private def count(filter: String): Future[Int] =
-    try db.run(products.filter(_.name.toLowerCase like filter.toLowerCase(Locale.ROOT)).length.result)
-    finally db.close()
+    db.run(products.filter(_.name.toLowerCase like filter.toLowerCase(Locale.ROOT)).length.result)
 
   override def count: Future[Int] =
-    try db.run(products.length.result)
-    finally db.close()
+    db.run(products.length.result)
 
   override def findById(id: Long): Future[CvsProduct] =
-    try db.run(filterQuery(id).result.head)
-    finally db.close()
+    db.run(filterQuery(id).result.head)
 
   override def insert(product: CvsProduct): Future[Int] =
-    try db.run(products += product)
-    finally db.close()
+    db.run(products += product)
 
   override def update(id: Long, update: CvsProduct): Future[Int] =
-    try db.run(filterQuery(id).update(update))
-    finally db.close()
+    db.run(filterQuery(id).update(update))
 
   override def delete(id: Long): Future[Int] =
-    try db.run(filterQuery(id).delete)
-    finally db.close()
+    db.run(filterQuery(id).delete)
 
   def getAll ={
-    try db.run(products.result)
-    finally db.close()
+    db.run(products.result)
   }
 }
 

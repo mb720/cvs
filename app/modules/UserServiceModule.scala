@@ -1,7 +1,7 @@
 package modules
 
-import models.daos.UserDAOImpl
-import models.services.UserServiceImpl
+import models.daos.{SqlUserDao, InMemoryUserDao}
+import models.services.CvsUserServiceWithDao
 
 /**
   * Lets us add, remove, and search users.
@@ -9,6 +9,6 @@ import models.services.UserServiceImpl
   */
 trait UserServiceModule {
 
-  lazy val userDAO = new UserDAOImpl
-  lazy val userService = new UserServiceImpl(userDAO)
+  lazy val userDAO = new SqlUserDao
+  lazy val userService = new CvsUserServiceWithDao(userDAO)
 }

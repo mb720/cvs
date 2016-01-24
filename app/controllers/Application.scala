@@ -5,14 +5,14 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import models.CvsUser
-import modules.EnvironmentModule
+import modules.SilhouetteModule
 import play.api.data.Forms._
 import play.api.data._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc._
 import views._
 
-class Application @Inject()(val messagesApi: MessagesApi) extends Silhouette[CvsUser, CookieAuthenticator] with EnvironmentModule {
+class Application @Inject()(val messagesApi: MessagesApi) extends Silhouette[CvsUser, CookieAuthenticator] with SilhouetteModule {
 
   val siteTitle = "CVS"
 
@@ -25,7 +25,9 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Silhouette[Cvs
   )
 
   def index = UserAwareAction { implicit request =>
-    Ok(html.index(siteTitle, helloForm, request.identity))
+    if (request.secure) Ok(html.index(siteTitle, helloForm, request.identity)) else
+    Forbidden(Messages("error.request.not.secure"))
+
   }
 
   def sayHello = Action { implicit request =>

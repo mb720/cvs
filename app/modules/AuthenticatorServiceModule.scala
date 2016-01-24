@@ -15,7 +15,7 @@ trait AuthenticatorServiceModule {
   lazy val cookieSettings = CookieAuthenticatorSettings(
     cookieName = "authenticator",
     cookiePath = "/",
-    // Requires SSL
+    // Requires SSL, signing in via HTTP does not work
     secureCookie = true,
     // Cookie is not accessible from client-side JavaScript code
     httpOnlyCookie = true,

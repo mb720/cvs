@@ -3,8 +3,11 @@
 
 # --- !Ups
 
-create table "cvs_products" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"name" VARCHAR(254) NOT NULL);
+--- create table "cvs_users" ("id" BIGSERIAL NOT NULL PRIMARY KEY,
+--- "first_name" VARCHAR(254) NOT NULL,
+--- "last_name" VARCHAR(254) NOT NULL,
+--- );
 
 # --- !Downs
 
-drop table "cvs_products";
+--- drop table "cvs_users";

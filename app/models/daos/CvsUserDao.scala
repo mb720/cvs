@@ -10,7 +10,8 @@ import scala.concurrent.Future
 /**
  * Give access to the user object.
  */
-trait UserDAO {
+trait CvsUserDao {
+  def save(user: CvsUser, loginInfo: LoginInfo)
 
   /**
    * Finds a user by its login info.
@@ -18,7 +19,7 @@ trait UserDAO {
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def find(loginInfo: LoginInfo): Future[Option[CvsUser]]
+  def retrieve(loginInfo: LoginInfo): Future[Option[CvsUser]]
 
   /**
    * Finds a user by its user ID.
@@ -26,13 +27,6 @@ trait UserDAO {
    * @param userID The ID of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def find(userID: UUID): Future[Option[CvsUser]]
+  def retrieve(userID: UUID): Future[Option[CvsUser]]
 
-  /**
-   * Saves a user.
-   *
-   * @param user The user to save.
-   * @return The saved user.
-   */
-  def save(user: CvsUser): Future[CvsUser]
 }

@@ -1,8 +1,8 @@
 error.email = Valid email required
-error.required = This field is required
+error.request.not.secure = Request is not secured. Please use HTTPS
 invalid.credentials = Invalid credentials!
 access.denied = Access denied!
-user.exists = There already exists a user with this email!
+authentication.error = Error. Could not authenticate
 
 home.title = Silhouette - Home
 sign.up.title = Silhouette - Sign Up
