@@ -9,8 +9,12 @@ GET         /                                controllers.Application.index
 GET         /hello                           controllers.Application.sayHello
 
 GET         /signIn                          controllers.UserAuthenticationController.showSignInForm
-GET         /signOut                         controllers.UserAuthenticationController.signOut
 POST        /authenticate/credentials        controllers.UserAuthenticationController.authenticate
+
+GET         /signUp                          controllers.UserAuthenticationController.showSignUpForm
+POST        /signUp                          controllers.UserAuthenticationController.signUp
+
+GET         /signOut                         controllers.UserAuthenticationController.signOut
 
 GET         /products                        controllers.CvsProducts.listProducts
 GET         /products/new                    controllers.CvsProducts.showProductForm

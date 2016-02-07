@@ -1,6 +1,7 @@
 package modules
 
-import models.daos.{SqlUserDao, InMemoryUserDao}
+import models.daos.logininfo.SqlLoginInfoDao
+import models.daos.user.SqlUserDao
 import models.services.CvsUserServiceWithDao
 
 /**
@@ -9,6 +10,9 @@ import models.services.CvsUserServiceWithDao
   */
 trait UserServiceModule {
 
-  lazy val userDAO = new SqlUserDao
+  this: DatabaseSupplier =>
+
+  lazy val loginInfoDao = new SqlLoginInfoDao(db)
+  lazy val userDAO = new SqlUserDao(loginInfoDao, db)
   lazy val userService = new CvsUserServiceWithDao(userDAO)
 }

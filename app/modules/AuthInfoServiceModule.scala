@@ -3,6 +3,7 @@ package modules
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
+import models.daos.passwordinfo.PasswordInfoDao
 import play.api.libs.concurrent.Execution.Implicits._
 
 /**
@@ -11,7 +12,8 @@ import play.api.libs.concurrent.Execution.Implicits._
   */
 trait AuthInfoServiceModule {
 
-  lazy val authInfoRepo = new DelegableAuthInfoRepository(authInfoDAO)
+  def passwordInfoDao: PasswordInfoDao
 
-  def authInfoDAO: DelegableAuthInfoDAO[PasswordInfo]
+  lazy val authInfoRepo = new DelegableAuthInfoRepository(passwordInfoDao)
+
 }

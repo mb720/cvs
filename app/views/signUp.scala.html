@@ -1,0 +1,29 @@
+@(signUpForm: Form[forms.SignUpForm.SignUpData], siteTitle: String = "Sign Up")(implicit request: RequestHeader, messages: Messages)
+
+@import b3.inline.fieldConstructor
+@* Without the @main block, bootstrap styling would not be applied *@
+@main(siteTitle, userMaybe = None) {
+  @*<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/signIn.css")">*@
+
+  <div id="signUp">
+
+    <fieldset class="col-md-6 col-md-offset-3">
+      <legend>@Messages("sign.up")</legend>
+      @helper.form(action = routes.UserAuthenticationController.signUp) {
+        @helper.CSRF.formField
+        @b3.text(signUpForm("name"), '_label -> Messages("sign.up.name"), 'placeholder -> Messages("sign.up.name.placeholder"), 'autofocus -> true )
+        @b3.email(signUpForm("email"), '_hiddenLabel -> Messages("email"), 'placeholder -> Messages("email"), 'class -> "form-control input-lg")
+        @b3.password(signUpForm("password"), '_hiddenLabel -> Messages("password"), 'placeholder -> Messages("password"), 'class -> "form-control input-lg")
+        <div class="form-group">
+          <div>
+            <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@Messages("sign.up")</button>
+          </div>
+          <hr>
+          <br>
+          @Messages("already.a.member")
+          <a href="@routes.Application.index">@Messages("sign.in.now")</a>
+        </div>
+      }
+    </fieldset>
+  </div>
+}

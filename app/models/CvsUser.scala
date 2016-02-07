@@ -7,17 +7,13 @@ import com.mohiva.play.silhouette.api.Identity
 /**
   * The user object.
   *
-  * @param ID the unique ID of the user
-  * @param firstName the first name of the authenticated user
-  * @param lastName the last name of the authenticated user
-  * @param email the email of the authenticated provider
+  * @param ID    the unique ID of the user
+  * @param name  the user's name
+  * @param email the user's email
   */
 case class CvsUser(ID: UUID,
-                   firstName: String,
-                   lastName: String,
+                   name: String,
                    email: String
                   ) extends Identity {
-
-  def fullName: String = firstName + " " + lastName
 }
 

@@ -1,10 +1,10 @@
-package models.daos
+package models.daos.user
 
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import models.CvsUser
-import models.daos.InMemoryUserDao._
+import models.daos.logininfo.LoginInfoDao
 
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -12,7 +12,13 @@ import scala.concurrent.Future
 /**
   * Lets us retrieve and save `CvsUser`s. Stores the users in RAM.
   */
-class InMemoryUserDao extends CvsUserDao {
+class InMemoryUserDao(val loginInfoDao: LoginInfoDao) extends CvsUserDao {
+
+  /**
+    * The list of users.
+    */
+  val users: mutable.HashMap[UUID, CvsUser] = mutable.HashMap()
+  val loginInfosToUserIds: mutable.HashMap[LoginInfo, UUID] = mutable.HashMap()
 
   def save(user: CvsUser, loginInfo: LoginInfo) = {
     users += user.ID -> user
@@ -46,14 +52,3 @@ class InMemoryUserDao extends CvsUserDao {
   }
 }
 
-/**
-  * The companion object.
-  */
-object InMemoryUserDao {
-
-  /**
-    * The list of users.
-    */
-  val users: mutable.HashMap[UUID, CvsUser] = mutable.HashMap()
-  val loginInfosToUserIds: mutable.HashMap[LoginInfo, UUID] = mutable.HashMap()
-}

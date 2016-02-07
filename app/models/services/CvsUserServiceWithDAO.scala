@@ -4,18 +4,20 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import models.CvsUser
-import models.daos.CvsUserDao
+import models.daos.user.CvsUserDao
 
 import scala.concurrent.Future
 
 /**
   * Handles actions to users.
   *
-  * @param userDAO The user DAO implementation.
+  * @param userDAO the user DAO implementation
   */
-class CvsUserServiceWithDao @Inject()(userDAO: CvsUserDao) extends CvsUserService {
+class CvsUserServiceWithDao (userDAO: CvsUserDao) extends CvsUserService {
 
-  override def save(user: CvsUser, loginInfo: LoginInfo) = userDAO.save(user, loginInfo)
+  override def save(user: CvsUser, loginInfo: LoginInfo) = {
+    userDAO.save(user, loginInfo)
+  }
 
   /**
     * Retrieves a user that matches the specified login info.

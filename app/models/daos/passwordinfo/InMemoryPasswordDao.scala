@@ -1,18 +1,17 @@
-package models.daos
+package models.daos.passwordinfo
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import models.daos.InMemoryPasswordDao._
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.collection.mutable
 import scala.concurrent.Future
 
 /**
-  * The DAO to store the password information.
+  * This DAO stores the link between login info and passwords in RAM.
   */
-class InMemoryPasswordDao extends DelegableAuthInfoDAO[PasswordInfo] {
+class InMemoryPasswordDao extends PasswordInfoDao {
+  private val loginInfoToPasswordInfo: mutable.HashMap[LoginInfo, PasswordInfo] = mutable.HashMap()
 
   /**
     * Finds the auth info which is linked with the specified login info.
@@ -75,12 +74,4 @@ class InMemoryPasswordDao extends DelegableAuthInfoDAO[PasswordInfo] {
     loginInfoToPasswordInfo -= loginInfo
     Future.successful(())
   }
-}
-
-object InMemoryPasswordDao {
-
-  /**
-    * The data store for the password info.
-    */
-  private val loginInfoToPasswordInfo: mutable.HashMap[LoginInfo, PasswordInfo] = mutable.HashMap()
 }

@@ -4,8 +4,6 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import models.CvsUser
 
-import scala.concurrent.Future
-
 /**
   * Handles actions to users.
   */

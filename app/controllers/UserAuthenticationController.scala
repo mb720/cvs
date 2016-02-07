@@ -9,8 +9,9 @@ import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import forms.SignInForm
-import forms.SignInForm.Data
+import forms.SignInForm.SignInData
+import forms.SignUpForm.SignUpData
+import forms.{SignInForm, SignUpForm}
 import models.CvsUser
 import modules.SilhouetteModule
 import play.api.Logger
@@ -22,12 +23,12 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 /**
-  * Responsible for signing in and out users.
+  * Responsible for signing in, up, and out users.
   * Created by Matthias Braun on 21.12.2015.
   */
 class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) extends Silhouette[CvsUser, CookieAuthenticator] with SilhouetteModule {
 
-  def handleLoginData(data: Data)(implicit request: Request[AnyContent]) = {
+  def handleLoginData(data: SignInData)(implicit request: Request[AnyContent]) = {
     Logger.info("Handling login data")
     if (request.secure) {
       val credentials = Credentials(data.email, data.password)
@@ -35,14 +36,12 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
         val redirectHereAfterSignIn = Redirect(routes.Application.index())
         userService.retrieve(loginInfo).flatMap {
           case Some(user) =>
-            Logger.info(s"Found user with matching login info: ${user.fullName}")
+            Logger.info(s"Found user with matching login info: ${user.name}")
             env.authenticatorService.create(loginInfo).map {
               case authenticator => authenticator
             }.flatMap { authenticator =>
               // The authenticator service is configured in the AuthenticatorServiceModule
-              Logger.info("Initializing authenticator")
               env.authenticatorService.init(authenticator).flatMap { value =>
-                Logger.info("Embedding cookie into response")
                 env.authenticatorService.embed(value, redirectHereAfterSignIn).onComplete {
                   case Success(authenticatorResult) =>
                     Future.successful(authenticatorResult)
@@ -71,7 +70,6 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
     } else Future.successful(Forbidden(Messages("error.request.not.secure")))
   }
 
-
   /**
     * When a user provides their credentials in order to sign in, this method checks that the credentials are valid.
     *
@@ -80,6 +78,11 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(form => Future.successful(BadRequest("Bad request")), data => handleLoginData(data))
   }
+
+
+  def signUp = Action.async(implicit request =>
+    SignUpForm.form.bindFromRequest.fold(form => Future.successful(BadRequest("Bad request")), data => signUpUser(data))
+  )
 
   /**
     * Signs out the current user.
@@ -93,14 +96,24 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
   }
 
   /**
+    * Shows the sign up form.
+    */
+  def showSignUpForm = Action { implicit request =>
+    if (request.secure) {
+      Ok(views.html.signUp(SignUpForm.form))
+    } else {
+      Forbidden(Messages("error.request.not.secure"))
+    }
+  }
+
+  /**
     * Shows the sign in form.
     */
   def showSignInForm = UserAwareAction.async { implicit request =>
     if (request.secure) {
-      Logger.info("Show sign in page")
       makeSureThereIsAdmin()
       request.identity match {
-        case Some(user) => Future.successful(Ok(s"You are already signed in, ${user.firstName}"))
+        case Some(user) => Future.successful(Ok(s"You are already signed in, ${user.name}"))
         case None => Future.successful {
           Logger.info("There's nobody signed in yet")
           Ok(views.html.signIn(SignInForm.form))
@@ -111,26 +124,53 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
     }
   }
 
+  def createUser(userData: SignUpData) = CvsUser(
+    ID = UUID.randomUUID(),
+    name = userData.name,
+    email = userData.email
+  )
+
+  def signUpUser(userData: SignUpData) = {
+    if (userData == null) {
+      Future.successful(InternalServerError("Can't sign up null user"))
+    } else {
+      Logger.info("Signing up user")
+      val userEmail = userData.email
+      val userLoginInfo = LoginInfo(CredentialsProvider.ID, userEmail)
+      val passHash = passwordHasher.hash(userData.password)
+      userService.retrieve(userLoginInfo).map {
+        case Some(preexistingUser) =>
+          Logger.info(s"User with mail $userEmail already exists")
+          Ok("User with that mail already exists")
+        case None =>
+          userService.save(createUser(userData), userLoginInfo)
+          Logger.info("Adding user login info and password to repo")
+          authInfoRepo.add(userLoginInfo, passHash)
+          Redirect(routes.Application.index()).flashing("success" -> Messages("sign.up.success"))
+      }.recover { case t: Throwable => InternalServerError(s"Could not retrieve user with mail $userEmail") }
+    }
+  }
+
   def makeSureThereIsAdmin() = {
     Logger.info("Making sure there is an admin user")
     val adminLoginInfo = LoginInfo(CredentialsProvider.ID, "admin@nowhere.com")
-    userService.retrieve(adminLoginInfo).flatMap {
-      case Some(admin) => Future.successful(Logger.info("Admin already exists"))
-      case None => Future.successful {
+    val passHash = passwordHasher.hash("ezgportal")
+    userService.retrieve(adminLoginInfo).map {
+      case Some(admin) =>
+        Logger.info("Admin already exists")
+      case None =>
         val email = adminLoginInfo.providerKey
         userService.save(createAdmin(email), adminLoginInfo)
-        val passHash = passwordHasher.hash("ezgportal")
+        Logger.info("Adding admin login info and password to repo")
         authInfoRepo.add(adminLoginInfo, passHash)
-      }
-    }
+    }.recover { case t: Throwable => Logger.warn("Could not access user service") }
   }
 
   def createAdmin(email: String): CvsUser = {
     Logger.info("Creating admin")
     CvsUser(
       ID = UUID.randomUUID(),
-      firstName = "Ad",
-      lastName = "Min",
+      name = "Admin",
       email = email
     )
   }

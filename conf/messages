@@ -4,15 +4,10 @@ invalid.credentials = Invalid credentials!
 access.denied = Access denied!
 authentication.error = Error. Could not authenticate
 
-home.title = Silhouette - Home
-sign.up.title = Silhouette - Sign Up
-sign.in.title = Silhouette - Sign In
-
 toggle.navigation = Toggle navigation
 welcome.signed.in = Welcome, you are now signed in!
 
 sign.up.account = Sign up for a new account
-sign.in.credentials = Sign in with your credentials
 
 error = Error!
 home = Home
@@ -22,12 +17,16 @@ full.name = Full name
 email = Email
 password = Password
 sign.up = Sign up
+sign.up.now = Sign up now
+sign.up.success = You signed up successfully
+sign.up.name = Name
+sign.up.name.placeholder = Apollo
+
 sign.in = Sign in
 sign.out = Sign out
 sign.out.success = You signed out successfully
 
 sign.in.now = Sign in now
-sign.up.now = Sign up now
 already.a.member = Already a member?
 not.a.member = Not a member?
 

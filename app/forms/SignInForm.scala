@@ -4,30 +4,26 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 /**
- * The form which handles the submission of the credentials.
- */
+  * Represents the sign in form and its data.
+  */
 object SignInForm {
 
   /**
-   * A play framework form.
-   */
+    * A play framework form.
+    */
   val form = Form(
     mapping(
       "email" -> email,
-      "password" -> nonEmptyText,
-      "rememberMe" -> boolean
-    )(Data.apply)(Data.unapply)
+      "password" -> nonEmptyText
+    )(SignInData.apply)(SignInData.unapply)
   )
 
   /**
-   * The form data.
-   *
-   * @param email The email of the user.
-   * @param password The password of the user.
-   * @param rememberMe Indicates if the user should stay logged in on the next visit.
-   */
-  case class Data(
-    email: String,
-    password: String,
-    rememberMe: Boolean)
+    * The sign in form data.
+    *
+    * @param email    email of the user
+    * @param password password of the user
+    */
+  case class SignInData(email: String, password: String)
+
 }

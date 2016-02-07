@@ -2,7 +2,7 @@ package models.daos
 
 import java.util.Locale
 
-import models.{CvsProductTable, CvsProduct}
+import models.tables.{CvsProduct, CvsProductTable}
 import play.api.Play.current
 import play.api.db.DB
 import slick.driver.PostgresDriver.api._

@@ -28,7 +28,7 @@
 
       <ul class="nav navbar-nav navbar-right">
       @userMaybe.map { user =>
-      <li><a href="@routes.Application.index">@user.fullName</a></li>
+      <li><a href="@routes.Application.index">@user.name</a></li>
       <li class ="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog fa-lg"></span></a>
         <ul class="dropdown-menu">

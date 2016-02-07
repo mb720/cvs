@@ -1,8 +1,8 @@
 package controllers
 
 import models.daos.CvsProductDAO
+import models.tables.CvsProduct
 import play.api.mvc._
-import models.CvsProduct
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.{MessagesApi, I18nSupport}

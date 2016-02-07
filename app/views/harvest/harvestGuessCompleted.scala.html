@@ -3,7 +3,7 @@
   @main(siteTitle, userMaybe) {
     <div id="thankYouArea">
       @if(userMaybe.isDefined) {
-        <div id="thankYouText">Danke für Deine Erntemeldung, @userMaybe.get.firstName</div>
+        <div id="thankYouText">Danke für Deine Erntemeldung, @userMaybe.get.name</div>
       } else {
         <div id="thankYouText">Danke für Deine Erntemeldung</div>
       }
