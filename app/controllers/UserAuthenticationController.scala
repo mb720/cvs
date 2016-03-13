@@ -17,7 +17,7 @@ import modules.SilhouetteModule
 import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
@@ -130,48 +130,45 @@ class UserAuthenticationController @Inject()(val messagesApi: MessagesApi) exten
     email = userData.email
   )
 
-  def signUpUser(userData: SignUpData) = {
+  def signUpUser(userData: SignUpData): Future[Result] = {
     if (userData == null) {
       Future.successful(InternalServerError("Can't sign up null user"))
     } else {
-      Logger.info("Signing up user")
-      val userEmail = userData.email
-      val userLoginInfo = LoginInfo(CredentialsProvider.ID, userEmail)
-      val passHash = passwordHasher.hash(userData.password)
-      userService.retrieve(userLoginInfo).map {
-        case Some(preexistingUser) =>
-          Logger.info(s"User with mail $userEmail already exists")
-          Ok("User with that mail already exists")
-        case None =>
-          userService.save(createUser(userData), userLoginInfo)
-          Logger.info("Adding user login info and password to repo")
-          authInfoRepo.add(userLoginInfo, passHash)
-          Redirect(routes.Application.index()).flashing("success" -> Messages("sign.up.success"))
-      }.recover { case t: Throwable => InternalServerError(s"Could not retrieve user with mail $userEmail") }
+      signUpUser(createUser(userData), userData.password)
     }
+  }
+
+  def signUpUser(user: CvsUser, password: String): Future[Result] = {
+    Logger.info("Signing up user")
+    val userEmail = user.email
+    val userLoginInfo = LoginInfo(CredentialsProvider.ID, userEmail)
+    val passHash = passwordHasher.hash(password)
+    userService.retrieve(userLoginInfo).map {
+      case Some(preexistingUser) =>
+        Logger.info(s"User with mail $userEmail already exists")
+        Ok("User with that mail already exists")
+      case None =>
+        userService.save(user, userLoginInfo)
+        Logger.info("Adding user login info and password to repo")
+        authInfoRepo.add(userLoginInfo, passHash)
+        Redirect(routes.Application.index()).flashing("success" -> Messages("sign.up.success"))
+    }.recover { case t: Throwable => InternalServerError(s"Could not retrieve user with mail $userEmail") }
   }
 
   def makeSureThereIsAdmin() = {
     Logger.info("Making sure there is an admin user")
-    val adminLoginInfo = LoginInfo(CredentialsProvider.ID, "admin@nowhere.com")
-    val passHash = passwordHasher.hash("ezgportal")
+    val adminEmail = "admin@nowhere.com"
+    val adminLoginInfo = LoginInfo(CredentialsProvider.ID, adminEmail)
     userService.retrieve(adminLoginInfo).map {
       case Some(admin) =>
         Logger.info("Admin already exists")
       case None =>
         val email = adminLoginInfo.providerKey
-        userService.save(createAdmin(email), adminLoginInfo)
+        val admin = CvsUser(UUID.randomUUID(), "Admin", email)
+        userService.save(admin, adminLoginInfo)
+        val passHash = passwordHasher.hash("ezgportal")
         Logger.info("Adding admin login info and password to repo")
         authInfoRepo.add(adminLoginInfo, passHash)
     }.recover { case t: Throwable => Logger.warn("Could not access user service") }
-  }
-
-  def createAdmin(email: String): CvsUser = {
-    Logger.info("Creating admin")
-    CvsUser(
-      ID = UUID.randomUUID(),
-      name = "Admin",
-      email = email
-    )
   }
 }

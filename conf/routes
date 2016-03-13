@@ -6,8 +6,9 @@
 GET         /                                controllers.Application.index
 # Allows sending messages like this: http://localhost:9000/newMsg?content=Hi%20there!
 #GET     /newMsg                     controllers.Application.newMsg(content:String)
-GET         /hello                           controllers.Application.sayHello
 
+POST        /gotMarkdown                     controllers.MarkdownController.transformMarkdown
+GET         /testMd                          controllers.Application.testMd
 GET         /signIn                          controllers.UserAuthenticationController.showSignInForm
 POST        /authenticate/credentials        controllers.UserAuthenticationController.authenticate
 

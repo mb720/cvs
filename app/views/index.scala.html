@@ -1,59 +1,39 @@
 @* A RequestHeader gets converted to Flash *@
-@(siteTitle: String, helloForm: Form[(String, Int, Option[String])], userMaybe: Option[CvsUser])(implicit flash: Flash, messages: Messages)
+@(siteTitle: String, markdownForm: Form[String], userMaybe: Option[CvsUser])(implicit flash: Flash, messages: Messages)
 
-@import helper._
+    @import b3.vertical.fieldConstructor
 
-@main(siteTitle, userMaybe) {
+    @main(siteTitle, userMaybe) {
 
+        @if(userMaybe.isDefined) {
 
-  @if(userMaybe.isDefined) {
-    <h1>Welcome, @userMaybe.get.name</h1>
-  }
+            <h1>Welcome, @userMaybe.get.name</h1>
+        }
+        <h2>Enter Markdown here</h2>
 
-  <h2>Please enter your data</h2>
+            @b3.form(routes.Application.testMd()) {
+            @b3.textarea(markdownForm("markdownText"), '_label -> "Markdown area", '_title -> "Enter Markdownhere")
+            @b3.submit('class -> "btn btn-default") { To HTML }
+        }
 
-  @form(action = routes.Application.sayHello, args = 'id -> "helloform") {
+        <div id="contactMeSection">
+            <p>
+                <a id="contactMeButton" class="btn btn-lg btn-primary"
+                href="mailto:office@@bullbytes.com" >
+                    <span id="contactMeButtonText">Schreiben Sie uns über diesen Knopf</span>
+                    <i class="fa fa-paper-plane fa-3x pull-center"></i>
+                </a>
+            </p>
+        </div>
 
-    @inputText(
-      field = helloForm("name"),
-      args = '_label -> "What's your name?", 'placeholder -> "John Doe"
-    )
-
-    @inputText(
-      field = helloForm("repeat"),
-      args = '_label -> "How many times?", 'size -> 3, 'placeholder -> 10
-    )
-    @select(
-      field = helloForm("color"),
-      options = options(
-        "" -> "Default",
-        "red" -> "Red",
-        "green" -> "Green",
-        "blue" -> "Blue"
-      ),
-      args = '_label -> "Choose a color"
-    )
-    <p class="buttons"> <input type="submit" id="submit"> <p>
-  }
-
-  <div id="contactMeSection">
-<p>
-  <a id="contactMeButton" class="btn btn-lg btn-primary"
-  href="mailto:office@@bullbytes.com" >
-    <span id="contactMeButtonText">Schreiben Sie uns über diesen Knopf</span>
-    <i class="fa fa-paper-plane fa-3x pull-center"></i>
-  </a>
-</p>
-  </div>
-
-  @flash.get("success").map { msg =>
-    <div id="success-alert" class="col-md-6 col-md-offset-3 alert alert-success">
-      <a href="#" class="close" data-dismiss="alert">&times;</a>
-      <strong>@msg</strong>
-    </div>
-    <script>
-      $("#success-alert").fadeTo(6000, 500).slideUp(500, function(){ $("#success-alert").alert('close'); });
-    </script>
-  }
-}
+        @flash.get("success").map { msg =>
+            <div id="success-alert" class="col-md-6 col-md-offset-3 alert alert-success">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <strong>@msg</strong>
+            </div>
+            <script>
+                    $("#success-alert").fadeTo(6000, 500).slideUp(500, function(){ $("#success-alert").alert('close'); });
+            </script>
+        }
+    }
 

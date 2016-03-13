@@ -6,6 +6,8 @@ import slick.driver.PostgresDriver.api._
 import slick.lifted.Tag
 
 /**
+  * Connects a [[models.CvsUser]] with their [[com.mohiva.play.silhouette.api.LoginInfo]] which contains their email
+  * that identifies a user when logging in.
   * Created by Matthias Braun on 1/15/2016.
   *
   * @param loginInfoProviderKey the provider key of the user's [[com.mohiva.play.silhouette.api.LoginInfo]]
